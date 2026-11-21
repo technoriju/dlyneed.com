@@ -21,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en-IN" className={jakarta.variable}>
       <body className="flex min-h-dvh flex-col">
         <Header />
-        <main id="main" className="mx-auto w-full max-w-[1200px] flex-1 px-4">
+        <main id="main" className="mx-auto w-full max-w-[1200px] flex-1 px-4 pt-7 pb-[88px]">
           {children}
         </main>
         <Footer />
