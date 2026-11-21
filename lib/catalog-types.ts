@@ -1,4 +1,5 @@
 export type CardProduct = {
+  id?: string;
   slug: string;
   name: string;
   image: string;
@@ -6,6 +7,7 @@ export type CardProduct = {
   mrpPaise: number;
   ratingAvg: number;
   ratingCount: number;
+  defaultVariantId?: string;
 };
 
 export type ProductDetail = {

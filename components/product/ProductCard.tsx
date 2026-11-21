@@ -1,13 +1,42 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useCart } from "@/components/cart/CartContext";
 import { CartIcon, HeartIcon } from "@/components/layout/icons";
 import { btnPrimary } from "@/components/ui/button";
 import type { CardProduct } from "@/lib/catalog";
 import { inr, offPct } from "@/lib/format";
 
-// Wishlist and Add to Cart buttons get wired to the cart store in build step 6.
 export function ProductCard({ product: p }: { product: CardProduct }) {
   const href = `/product/${p.slug}`;
+  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const productId = p.id || p.slug;
+  const isWishlisted = isInWishlist(productId);
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAddToCart = async () => {
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1400);
+
+    const variantId = p.defaultVariantId || p.id || p.slug;
+    await addToCart(variantId, 1, {
+      productId: p.id,
+      slug: p.slug,
+      name: p.name,
+      image: p.image,
+      pricePaise: p.pricePaise,
+      mrpPaise: p.mrpPaise,
+    });
+  };
+
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await toggleWishlist(productId, p.name);
+  };
+
   return (
     <article className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-border bg-surface shadow-card transition-shadow hover:shadow-[0_10px_28px_rgba(17,17,17,.07)]">
       <div className="relative aspect-square overflow-hidden bg-surface-muted">
@@ -25,11 +54,14 @@ export function ProductCard({ product: p }: { product: CardProduct }) {
         </span>
         <button
           type="button"
-          aria-pressed="false"
-          aria-label={`Save ${p.name} to wishlist`}
-          className="absolute top-2.5 right-2.5 grid size-[34px] place-items-center rounded-full bg-surface text-ink-900 shadow-card"
+          aria-pressed={isWishlisted}
+          aria-label={isWishlisted ? `Remove ${p.name} from wishlist` : `Save ${p.name} to wishlist`}
+          onClick={handleWishlistToggle}
+          className={`absolute top-2.5 right-2.5 grid size-[34px] cursor-pointer place-items-center rounded-full bg-surface shadow-card transition-colors ${
+            isWishlisted ? "text-[#c0392b]" : "text-ink-900 hover:text-brand-600"
+          }`}
         >
-          <HeartIcon size={16} />
+          <HeartIcon size={16} filled={isWishlisted} />
         </button>
       </div>
       <div className="flex flex-1 flex-col gap-1.5 p-3.5 max-[480px]:p-2.5">
@@ -53,8 +85,20 @@ export function ProductCard({ product: p }: { product: CardProduct }) {
             {inr(p.mrpPaise)}
           </s>
         </div>
-        <button type="button" className={`${btnPrimary} mt-auto h-[38px] w-full text-[13px]`}>
-          <CartIcon size={15} /> Add to Cart
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className={`${btnPrimary} mt-auto h-[38px] w-full text-[13px] ${
+            justAdded ? "!bg-ink-900 text-white" : ""
+          }`}
+        >
+          {justAdded ? (
+            <span>✓ Added</span>
+          ) : (
+            <>
+              <CartIcon size={15} /> Add to Cart
+            </>
+          )}
         </button>
       </div>
     </article>

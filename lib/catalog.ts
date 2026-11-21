@@ -16,6 +16,7 @@ import { categoryNav } from "@/lib/nav";
 export * from "@/lib/catalog-types";
 
 const cardSelect = {
+  id: true,
   slug: true,
   name: true,
   images: true,
@@ -23,10 +24,22 @@ const cardSelect = {
   mrpPaise: true,
   ratingAvg: true,
   ratingCount: true,
+  variants: {
+    take: 1,
+    select: { id: true },
+  },
 } as const;
 
-function toCard({ images, ...p }: { images: unknown } & Omit<CardProduct, "image">): CardProduct {
-  return { ...p, image: (images as string[])[0] };
+function toCard({
+  images,
+  variants,
+  ...p
+}: { images: unknown; variants?: Array<{ id: string }> } & Omit<CardProduct, "image" | "defaultVariantId">): CardProduct {
+  return {
+    ...p,
+    image: (images as string[])[0],
+    defaultVariantId: variants?.[0]?.id,
+  };
 }
 
 export async function getCategories() {
@@ -126,6 +139,10 @@ export async function getAllActiveProducts() {
           slug: true,
           name: true,
         },
+      },
+      variants: {
+        take: 1,
+        select: { id: true },
       },
     },
   });

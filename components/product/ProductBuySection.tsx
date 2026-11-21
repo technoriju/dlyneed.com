@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useCart } from "@/components/cart/CartContext";
 import { CartIcon, HeartIcon, PinIcon, ReturnIcon, TruckIcon } from "@/components/layout/icons";
 import { btnPrimary, btnSecondary, btnSecondarySm } from "@/components/ui/button";
 import type { ProductDetail } from "@/lib/catalog-types";
@@ -23,26 +24,54 @@ function getEstimatedDeliveryDate(): string {
 
 export function ProductBuySection({ product }: Props) {
   const router = useRouter();
+  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const isWishlisted = isInWishlist(product.id);
+
   const initialOption = product.variants.length > 0 ? product.variants[0].value : "";
   const [selectedOption, setSelectedOption] = useState<string>(initialOption);
   const [qty, setQty] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Pincode checker state
   const [pincode, setPincode] = useState("");
   const [pinResult, setPinResult] = useState<{ checked: boolean; valid: boolean; message: string } | null>(null);
 
+  const selectedVariant =
+    product.variants.find((v) => v.value === selectedOption) || product.variants[0];
+
   const handleQtyChange = (delta: number) => {
     setQty((prev) => Math.max(1, Math.min(10, prev + delta)));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (!selectedVariant) return;
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1400);
+
+    await addToCart(selectedVariant.id, qty, {
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      image: product.images[0] || "",
+      optionName: product.optionName,
+      optionValue: selectedVariant.value,
+      pricePaise: product.pricePaise,
+      mrpPaise: product.mrpPaise,
+    });
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
+    if (!selectedVariant) return;
+    await addToCart(selectedVariant.id, qty, {
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      image: product.images[0] || "",
+      optionName: product.optionName,
+      optionValue: selectedVariant.value,
+      pricePaise: product.pricePaise,
+      mrpPaise: product.mrpPaise,
+    });
     router.push("/checkout");
   };
 
@@ -142,7 +171,7 @@ export function ProductBuySection({ product }: Props) {
           type="button"
           onClick={handleAddToCart}
           className={`${btnSecondary} ${
-            isAdded ? "border-ok bg-ok/10 text-ok" : ""
+            isAdded ? "!border-ok !bg-ok/10 !text-ok" : ""
           } flex-1 min-w-[140px]`}
         >
           {isAdded ? (
@@ -168,14 +197,14 @@ export function ProductBuySection({ product }: Props) {
           type="button"
           aria-pressed={isWishlisted}
           aria-label={isWishlisted ? "Remove from wishlist" : "Save to wishlist"}
-          onClick={() => setIsWishlisted((prev) => !prev)}
-          className={`grid size-11 place-items-center rounded-sm border border-border-strong bg-surface transition-colors ${
+          onClick={() => toggleWishlist(product.id, product.name)}
+          className={`grid size-11 cursor-pointer place-items-center rounded-sm border transition-colors ${
             isWishlisted
-              ? "border-brand-600 bg-brand-50 text-brand-600"
-              : "text-ink-700 hover:border-brand-500 hover:text-ink-900"
+              ? "border-[#c0392b] bg-red-50 text-[#c0392b]"
+              : "border-border-strong bg-surface text-ink-700 hover:border-brand-500 hover:text-ink-900"
           }`}
         >
-          <HeartIcon size={18} />
+          <HeartIcon size={18} filled={isWishlisted} />
         </button>
       </div>
 

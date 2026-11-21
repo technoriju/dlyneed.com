@@ -25,8 +25,16 @@ export const SearchIcon = ({ size = 16, className }: P) => (
   </svg>
 );
 
-export const HeartIcon = ({ size = 18, className }: P) => (
-  <svg {...base(size, className)} strokeWidth={1.8}>
+export const HeartIcon = ({
+  size = 18,
+  className,
+  filled = false,
+}: P & { filled?: boolean }) => (
+  <svg
+    {...base(size, className)}
+    strokeWidth={1.8}
+    fill={filled ? "currentColor" : "none"}
+  >
     <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" />
   </svg>
 );

@@ -68,3 +68,13 @@ h4 {
     animation: none !important;
   }
 }
+
+@keyframes bump {
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+.animate-bump {
+  animation: bump 0.35s ease;
+}
