@@ -15,8 +15,27 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://shopmate.com"),
-  title: { default: "ShopMate", template: "%s | ShopMate" },
-  description: "Your one-stop shop for quality products at the best prices.",
+  title: { default: "ShopMate – Quality Products, Best Prices in India", template: "%s | ShopMate" },
+  description: "Shop quality electronics, fashion, home essentials, beauty, and sports at ShopMate with fast India delivery.",
+  alternates: {
+    canonical: "./",
+    languages: {
+      "en-IN": "/",
+    },
+  },
+  openGraph: {
+    title: "ShopMate – Quality Products, Best Prices in India",
+    description: "Shop quality electronics, fashion, home essentials, beauty, and sports at ShopMate with fast India delivery.",
+    url: "https://shopmate.com",
+    siteName: "ShopMate",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ShopMate – Quality Products, Best Prices in India",
+    description: "Shop quality electronics, fashion, home essentials, beauty, and sports at ShopMate with fast India delivery.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

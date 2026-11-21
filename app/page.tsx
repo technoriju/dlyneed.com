@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CategoryTile } from "@/components/home/CategoryTile";
@@ -7,6 +8,15 @@ import { Testimonial } from "@/components/home/Testimonial";
 import { ProductCard } from "@/components/product/ProductCard";
 import { btnPrimary, btnSecondary, linkArrow } from "@/components/ui/button";
 import { getBestSellers, getCategories } from "@/lib/catalog";
+
+export const metadata: Metadata = {
+  title: "ShopMate – Quality Products, Best Prices in India",
+  description:
+    "Explore ShopMate for electronics, fashion, home essentials, beauty, and sports. Enjoy fast shipping across India, secure Razorpay checkout, and unbeatable deals.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const reviews = [
   { text: "Amazing products and fast delivery! ShopMate is my go-to store for all my needs.", name: "John D.", initials: "JD", tint: "bg-cat-butter" },
@@ -28,8 +38,50 @@ const arrow = <span aria-hidden="true">→</span>;
 export default async function Home() {
   const [categories, bestSellers] = await Promise.all([getCategories(), getBestSellers()]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://shopmate.com/#organization",
+        name: "ShopMate",
+        url: "https://shopmate.com",
+        logo: "https://shopmate.com/logo.svg",
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: "+91-1800-000-0000",
+          contactType: "customer service",
+          areaServed: "IN",
+          availableLanguage: ["en", "hi"],
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://shopmate.com/#website",
+        url: "https://shopmate.com",
+        name: "ShopMate",
+        publisher: {
+          "@id": "https://shopmate.com/#organization",
+        },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: "https://shopmate.com/shop?q={search_term_string}",
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-[72px]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[72px]">
       <div>
         <section
           aria-labelledby="hero-h"
@@ -136,5 +188,6 @@ export default async function Home() {
         </div>
       </section>
     </div>
+    </>
   );
 }

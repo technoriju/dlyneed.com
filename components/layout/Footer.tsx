@@ -16,6 +16,7 @@ const serviceLinks = [
   { href: "/policies/returns", label: "Returns & Refunds" },
   { href: "/policies/shipping", label: "Shipping Policy" },
   { href: "/help", label: "Help & FAQs" },
+  { href: "/contact", label: "Contact Us" },
 ];
 
 function LinkList({ title, links }: { title: string; links: { href: string; label: string }[] }) {
@@ -58,8 +59,18 @@ export function Footer() {
             <NewsletterForm />
           </div>
         </div>
-        <div className="mt-10 flex flex-wrap justify-between gap-4 border-t border-border-strong pt-5 text-[13px] text-ink-500">
-          <span>© <Year /> ShopMate. All rights reserved.</span>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border-strong pt-5 text-[13px] text-ink-500">
+          <div className="flex flex-wrap items-center gap-3">
+            <span>© <Year /> ShopMate. All rights reserved.</span>
+            <span aria-hidden="true" className="text-border-strong">·</span>
+            <Link href="/policies/privacy" className="hover:text-brand-600 transition-colors">
+              Privacy Policy
+            </Link>
+            <span aria-hidden="true" className="text-border-strong">·</span>
+            <Link href="/policies/terms" className="hover:text-brand-600 transition-colors">
+              Terms of Service
+            </Link>
+          </div>
           <span>Prices include GST · Payments by Razorpay</span>
         </div>
       </div>
