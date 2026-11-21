@@ -6,6 +6,7 @@ import {
   type CardProduct,
   type CatalogFilters,
   type CategoryWithCount,
+  type ProductDetail,
   PRICE_OPTIONS,
 } from "@/lib/catalog-types";
 import { db } from "@/lib/db";
@@ -46,6 +47,59 @@ export async function getCategoryBySlug(slug: string) {
     where: { slug },
     select: { id: true, slug: true, name: true, image: true, tint: true },
   });
+}
+
+export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
+  "use cache";
+  cacheLife({ revalidate: 600 });
+  cacheTag("products");
+  const p = await db.product.findUnique({
+    where: { slug, isActive: true },
+    include: {
+      category: {
+        select: { id: true, slug: true, name: true, tint: true },
+      },
+      variants: {
+        select: { id: true, value: true, sku: true, stock: true },
+      },
+    },
+  });
+  if (!p) return null;
+
+  return {
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    highlights: (p.highlights as string[]) ?? [],
+    specs: (p.specs as Array<{ label: string; value: string }>) ?? [],
+    images: (p.images as string[]) ?? [],
+    pricePaise: p.pricePaise,
+    mrpPaise: p.mrpPaise,
+    ratingAvg: p.ratingAvg,
+    ratingCount: p.ratingCount,
+    optionName: p.optionName,
+    category: p.category,
+    variants: p.variants,
+  };
+}
+
+export async function getRelatedProducts(currentSlug: string, categorySlug: string): Promise<CardProduct[]> {
+  "use cache";
+  cacheLife({ revalidate: 600 });
+  cacheTag("products");
+  const all = await getAllActiveProducts();
+  const sameCat = all.filter((p) => p.slug !== currentSlug && p.category.slug === categorySlug);
+  const otherCat = all.filter((p) => p.slug !== currentSlug && p.category.slug !== categorySlug);
+  return [...sameCat, ...otherCat].slice(0, 4).map(toCard);
+}
+
+export async function getAllProductSlugs(): Promise<string[]> {
+  "use cache";
+  cacheLife({ revalidate: 600 });
+  cacheTag("products");
+  const all = await getAllActiveProducts();
+  return all.map((p) => p.slug);
 }
 
 export async function getAllActiveProducts() {

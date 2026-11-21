@@ -8,6 +8,33 @@ export type CardProduct = {
   ratingCount: number;
 };
 
+export type ProductDetail = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  highlights: string[];
+  specs: Array<{ label: string; value: string }>;
+  images: string[];
+  pricePaise: number;
+  mrpPaise: number;
+  ratingAvg: number;
+  ratingCount: number;
+  optionName: string | null;
+  category: {
+    id: string;
+    slug: string;
+    name: string;
+    tint: string;
+  };
+  variants: Array<{
+    id: string;
+    value: string;
+    sku: string;
+    stock: number;
+  }>;
+};
+
 export type CategoryWithCount = {
   id: string;
   slug: string;

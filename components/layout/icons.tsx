@@ -101,3 +101,17 @@ export const XIcon = ({ size = 16, className }: P) => (
     <path d="M18 6 6 18M6 6l12 12" />
   </svg>
 );
+
+export const PinIcon = ({ size = 18, className }: P) => (
+  <svg {...base(size, className)} strokeWidth={1.8}>
+    <path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" />
+    <circle cx="12" cy="10" r="2.5" />
+  </svg>
+);
+
+export const LockIcon = ({ size = 18, className }: P) => (
+  <svg {...base(size, className)} strokeWidth={1.7}>
+    <rect x="4" y="11" width="16" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+  </svg>
+);

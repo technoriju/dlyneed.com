@@ -12,6 +12,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://shopmate.com"),
   title: { default: "ShopMate", template: "%s | ShopMate" },
   description: "Your one-stop shop for quality products at the best prices.",
 };
