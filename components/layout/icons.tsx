@@ -130,3 +130,17 @@ export const CheckIcon = ({ size = 18, className }: P) => (
   </svg>
 );
 
+export const BoxIcon = ({ size = 18, className }: P) => (
+  <svg {...base(size, className)} strokeWidth={1.8}>
+    <path d="M21 8 12 3 3 8v8l9 5 9-5z" />
+    <path d="m3.3 7 8.7 5 8.7-5M12 12v9" />
+  </svg>
+);
+
+export const LogoutIcon = ({ size = 18, className }: P) => (
+  <svg {...base(size, className)} strokeWidth={1.8}>
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+  </svg>
+);
+
+

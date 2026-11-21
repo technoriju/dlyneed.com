@@ -147,6 +147,7 @@ export async function getSessionUser(req?: NextRequest) {
         phone: true,
         name: true,
         email: true,
+        createdAt: true,
       },
     });
   } catch {

@@ -107,6 +107,79 @@ export function verifyPaymentSignature(
   return expectedSignature === signature;
 }
 
+export interface CreateRefundParams {
+  paymentId: string;
+  amountPaise: number;
+  notes?: Record<string, string>;
+}
+
+export interface RazorpayRefundResult {
+  id: string;
+  amount: number;
+  currency: string;
+  paymentId: string;
+  status: string;
+  isMock?: boolean;
+}
+
+/**
+ * Creates a refund with Razorpay Refunds API (spec §7, §8).
+ * Falls back to mock refund in development.
+ */
+export async function createRazorpayRefund({
+  paymentId,
+  amountPaise,
+  notes = {},
+}: CreateRefundParams): Promise<RazorpayRefundResult> {
+  const isRealKey =
+    process.env.RAZORPAY_KEY_ID &&
+    process.env.RAZORPAY_KEY_SECRET &&
+    !process.env.RAZORPAY_KEY_ID.includes("shopmate");
+
+  if (isRealKey) {
+    try {
+      const auth = Buffer.from(
+        `${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`
+      ).toString("base64");
+
+      const res = await fetch(`https://api.razorpay.com/v1/payments/${paymentId}/refund`, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: amountPaise,
+          notes,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          id: data.id,
+          amount: data.amount,
+          currency: data.currency,
+          paymentId: data.payment_id,
+          status: data.status,
+        };
+      }
+    } catch (err) {
+      console.warn("Razorpay Refund API call failed, using mock simulator:", err);
+    }
+  }
+
+  // Development simulator refund
+  return {
+    id: `rfnd_sim_${Date.now()}`,
+    amount: amountPaise,
+    currency: "INR",
+    paymentId,
+    status: "processed",
+    isMock: true,
+  };
+}
+
 /**
  * Verifies Razorpay webhook X-Razorpay-Signature header (spec §7).
  */

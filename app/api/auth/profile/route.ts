@@ -97,6 +97,7 @@ export async function POST(req: NextRequest) {
           name: updated.name,
           phone: updated.phone,
           email: updated.email,
+          createdAt: updated.createdAt,
         },
       });
     }
