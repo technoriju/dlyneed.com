@@ -153,7 +153,7 @@ async function main() {
       const code = sku(p.slug, value);
       await db.variant.upsert({
         where: { sku: code },
-        update: { value },
+        update: { value, stock: PLACEHOLDER_STOCK },
         create: { productId: row.id, value, sku: code, stock: PLACEHOLDER_STOCK },
       });
     }
