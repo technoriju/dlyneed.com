@@ -23,6 +23,17 @@ model User {
   cart      CartItem[]
 }
 
+model OtpVerification {
+  id        String   @id @default(cuid())
+  phone     String   @unique // E.164, e.g. +919876543210
+  codeHash  String
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
 model Category {
   id       String    @id @default(cuid())
   slug     String    @unique

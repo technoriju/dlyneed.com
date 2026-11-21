@@ -8,7 +8,7 @@ const iconBtn =
   "relative grid size-[42px] place-items-center rounded-full border border-border bg-surface text-ink-900 hover:border-brand-500 hover:text-brand-600 max-[480px]:size-[38px]";
 
 export function HeaderIcons() {
-  const { cartCount, wishlistCount, cartBump, wishBump } = useCart();
+  const { cartCount, wishlistCount, cartBump, wishBump, isLoggedIn } = useCart();
 
   return (
     <div className="flex gap-2 max-[960px]:ml-auto max-[480px]:gap-1.5">
@@ -38,7 +38,12 @@ export function HeaderIcons() {
           </span>
         )}
       </Link>
-      <Link href="/account" aria-label="Account" className={iconBtn} id="acctBtn">
+      <Link
+        href={isLoggedIn ? "/account" : "/login?next=/account"}
+        aria-label="Account"
+        className={iconBtn}
+        id="acctBtn"
+      >
         <UserIcon />
       </Link>
     </div>

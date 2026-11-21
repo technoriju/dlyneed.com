@@ -4,6 +4,7 @@ import { jwtVerify, SignJWT } from "jose";
 import { db } from "@/lib/db";
 
 export const SESSION_COOKIE_NAME = "shopmate_session";
+export const PENDING_COOKIE_NAME = "shopmate_pending_auth";
 
 const secretKey = new TextEncoder().encode(
   process.env.SESSION_SECRET || "shopmate-super-secret-dev-session-key-must-be-at-least-32-chars-long"
@@ -44,6 +45,82 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
 }
 
 /**
+ * Signed token for new users who completed OTP and are on the profile step.
+ */
+export async function signPendingAuth(phone: string): Promise<string> {
+  return new SignJWT({ phone, isPending: true })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("15m")
+    .sign(secretKey);
+}
+
+export async function verifyPendingAuth(token: string): Promise<{ phone: string } | null> {
+  try {
+    const { payload } = await jwtVerify(token, secretKey);
+    if (!payload.phone || typeof payload.phone !== "string" || !payload.isPending) return null;
+    return { phone: payload.phone as string };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Sets the httpOnly session cookie.
+ */
+export async function setSessionCookie(token: string) {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+  } catch {
+    // cookies() mutation outside Next request scope (e.g. test environment)
+  }
+}
+
+/**
+ * Clears the session cookie on logout.
+ */
+export async function clearSessionCookie() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete(SESSION_COOKIE_NAME);
+    cookieStore.delete(PENDING_COOKIE_NAME);
+  } catch {
+    // Outside Next request scope
+  }
+}
+
+export async function setPendingCookie(token: string) {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set(PENDING_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 15 * 60, // 15 minutes
+    });
+  } catch {
+    // Outside Next request scope
+  }
+}
+
+export async function clearPendingCookie() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete(PENDING_COOKIE_NAME);
+  } catch {
+    // Outside Next request scope
+  }
+}
+
+/**
  * Reads the session cookie and returns the authenticated user from the database, or null.
  * Accepts an optional NextRequest for route handlers and test environments.
  */
@@ -55,7 +132,7 @@ export async function getSessionUser(req?: NextRequest) {
         const cookieStore = await cookies();
         token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
       } catch {
-        // cookies() outside Next request scope
+        // Outside Next.js request scope
       }
     }
     if (!token) return null;
@@ -72,6 +149,29 @@ export async function getSessionUser(req?: NextRequest) {
         email: true,
       },
     });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Reads pending auth cookie for new user profile creation.
+ */
+export async function getPendingPhone(req?: NextRequest): Promise<string | null> {
+  try {
+    let token = req?.cookies?.get(PENDING_COOKIE_NAME)?.value;
+    if (!token) {
+      try {
+        const cookieStore = await cookies();
+        token = cookieStore.get(PENDING_COOKIE_NAME)?.value;
+      } catch {
+        // Outside Next.js request scope
+      }
+    }
+    if (!token) return null;
+
+    const res = await verifyPendingAuth(token);
+    return res ? res.phone : null;
   } catch {
     return null;
   }

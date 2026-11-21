@@ -38,6 +38,13 @@ const initialTotals: CartTotals = {
   totalSavingsPaise: 0,
 };
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  phone: string;
+  email: string | null;
+}
+
 interface CartContextType {
   items: CartPricedItem[];
   summary: CartTotals;
@@ -51,6 +58,9 @@ interface CartContextType {
   cartBump: boolean;
   wishBump: boolean;
   isLoggedIn: boolean;
+  user: AuthUser | null;
+  loginUser: (user: AuthUser) => Promise<void>;
+  logout: () => Promise<void>;
   addToCart: (variantId: string, qty?: number, fallbackInfo?: Partial<CartPricedItem>) => Promise<void>;
   updateQty: (variantId: string, qty: number) => Promise<void>;
   removeFromCart: (variantId: string) => Promise<void>;
@@ -83,6 +93,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   const [cartBump, setCartBump] = useState(false);
   const [wishBump, setWishBump] = useState(false);
@@ -171,6 +182,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
         if (cartData.user) {
           setIsLoggedIn(true);
+          setUser(cartData.user);
           // If guest had local items, merge them into the user's DB account
           if (localGuestCart.length > 0) {
             await fetch("/api/cart", {
@@ -564,6 +576,71 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     showToast("Moved all items to cart");
   }, [wishlistProducts, addToCart, isLoggedIn, persistGuestWishlist, showToast]);
 
+  const loginUser = useCallback(async (newUser: AuthUser) => {
+    setIsLoggedIn(true);
+    setUser(newUser);
+
+    let localGuestCart: Array<{ variantId: string; qty: number }> = [];
+    let localGuestWishlist: string[] = [];
+    try {
+      const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (storedCart) localGuestCart = JSON.parse(storedCart);
+      const storedWish = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (storedWish) localGuestWishlist = JSON.parse(storedWish);
+    } catch {
+      // Ignore
+    }
+
+    if (localGuestCart.length > 0) {
+      await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "merge", items: localGuestCart }),
+      });
+      localStorage.removeItem(CART_STORAGE_KEY);
+    }
+
+    if (localGuestWishlist.length > 0) {
+      await fetch("/api/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "merge", productIds: localGuestWishlist }),
+      });
+      localStorage.removeItem(WISHLIST_STORAGE_KEY);
+    }
+
+    const [userCartRes, userWishRes] = await Promise.all([
+      fetch("/api/cart"),
+      fetch("/api/wishlist"),
+    ]);
+    if (userCartRes.ok) {
+      const freshCart = await userCartRes.json();
+      setItems(freshCart.items || []);
+      setSummary(freshCart.summary || initialTotals);
+      setCouponCode(freshCart.couponCode || null);
+    }
+    if (userWishRes.ok) {
+      const freshWish = await userWishRes.json();
+      setWishlistIds(freshWish.productIds || []);
+      setWishlistProducts(freshWish.items || []);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Ignore
+    }
+    setIsLoggedIn(false);
+    setUser(null);
+    setItems([]);
+    setSummary(initialTotals);
+    setWishlistIds([]);
+    setWishlistProducts([]);
+    showToast("Logged out");
+  }, [showToast]);
+
   const isInWishlist = useCallback(
     (productId: string) => wishlistIds.includes(productId),
     [wishlistIds]
@@ -587,6 +664,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         cartBump,
         wishBump,
         isLoggedIn,
+        user,
+        loginUser,
+        logout,
         addToCart,
         updateQty,
         removeFromCart,
