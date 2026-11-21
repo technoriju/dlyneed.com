@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* ShopMate design tokens (spec §3). Light only, by brand choice. */
+@theme {
+  --color-brand-50: #f4f8f4;
+  --color-brand-100: #ecf0e4;
+  --color-brand-500: #727f42;
+  --color-brand-600: #5f6b35;
+  --color-brand-700: #525d2d;
+  --color-sand-100: #f4f0e4;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f4f0;
+  --color-border: #ececea;
+  --color-border-strong: #d9d9d4;
+  --color-ink-900: #111111;
+  --color-ink-700: #3d3d3a;
+  --color-ink-500: #6b6b66;
+  --color-ink-400: #8a8a85;
+  --color-star: #f5b301;
+  --color-ok: #2f7d4f;
+  --color-warn: #9a6200;
+  --color-bad: #b03a2e;
+  --color-info: #2f5f8a;
+  --color-cat-blue: #e4ecf8;
+  --color-cat-rose: #fce6e2;
+  --color-cat-butter: #fcf0dc;
+  --color-cat-lilac: #e4e0ee;
+  --color-cat-mint: #dcebe4;
+  --color-cat-peach: #fce9dc;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04);
+  --shadow-pop: 0 16px 40px rgba(17, 17, 17, 0.12);
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink-700);
+  font: 400 15px/1.55 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-ink-900);
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,181 @@
+// ShopMate data model (spec §4), adapted for MySQL/MariaDB:
+// MySQL has no scalar lists, so String[] fields are stored as Json arrays.
+// Money is ALWAYS stored in paise (integers).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id        String         @id @default(cuid())
+  phone     String         @unique // E.164, e.g. +919876543210
+  name      String
+  email     String?
+  createdAt DateTime       @default(now())
+  addresses Address[]
+  orders    Order[]
+  wishlist  WishlistItem[]
+  cart      CartItem[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  image    String
+  tint     String // design token, e.g. "cat-blue"
+  products Product[]
+}
+
+model Product {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  name         String
+  description  String         @db.Text
+  highlights   Json // string[]
+  specs        Json // [{label, value}]
+  categoryId   String
+  category     Category       @relation(fields: [categoryId], references: [id])
+  images       Json // string[]
+  pricePaise   Int
+  mrpPaise     Int
+  ratingAvg    Float          @default(0)
+  ratingCount  Int            @default(0)
+  optionName   String? // "Size", "Colour"…
+  isBestSeller Boolean        @default(false) // home page "Best sellers"
+  variants     Variant[]
+  wishlistedBy WishlistItem[]
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+
+  @@index([categoryId])
+}
+
+model Variant {
+  id        String     @id @default(cuid())
+  productId String
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  value     String
+  sku       String     @unique
+  stock     Int
+  cartItems CartItem[]
+
+  @@index([productId])
+}
+
+model Address {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  pincode   String
+  type      String // Home | Work | Other
+  isDefault Boolean @default(false)
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  variantId String
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  qty       Int
+
+  @@unique([userId, variantId])
+}
+
+model WishlistItem {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Coupon {
+  code             String    @id
+  type             String // percent | flat
+  value            Int // percent: 10 = 10%; flat: paise
+  maxDiscountPaise Int?
+  minOrderPaise    Int       @default(0)
+  isActive         Boolean
+  expiresAt        DateTime?
+  perUserLimit     Int       @default(1)
+}
+
+model Order {
+  id                String      @id // human ID, e.g. SM10440
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  status            OrderStatus @default(PENDING_PAYMENT)
+  items             OrderItem[]
+  addressSnapshot   Json // copy of the address at order time
+  delivery          String // standard | express
+  paymentMethod     String // upi | card | netbanking | wallet | cod
+  subtotalPaise     Int
+  discountPaise     Int
+  couponCode        String?
+  shippingPaise     Int
+  feesPaise         Int // express + COD fee
+  totalPaise        Int
+  razorpayOrderId   String?     @unique
+  razorpayPaymentId String?     @unique
+  awb               String? // courier tracking number
+  events            OrderEvent[]
+  createdAt         DateTime    @default(now())
+
+  @@index([userId])
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  PACKED
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  RETURNED
+  REFUNDED
+  PAYMENT_FAILED
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId String
+  name      String
+  option    String?
+  image     String
+  unitPaise Int
+  qty       Int
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id      String      @id @default(cuid())
+  orderId String
+  order   Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status  OrderStatus
+  note    String?
+  at      DateTime    @default(now())
+
+  @@index([orderId])
+}
