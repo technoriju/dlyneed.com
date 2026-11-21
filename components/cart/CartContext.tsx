@@ -70,6 +70,7 @@ interface CartContextType {
   toggleWishlist: (productId: string, productName?: string) => Promise<boolean>;
   moveAllWishlistToCart: () => Promise<void>;
   isInWishlist: (productId: string) => boolean;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -646,6 +647,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [wishlistIds]
   );
 
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setSummary(initialTotals);
+    setCouponCode(null);
+    setCouponData(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(CART_STORAGE_KEY);
+      localStorage.removeItem(COUPON_STORAGE_KEY);
+    }
+  }, []);
+
   const cartCount = summary.totalQty;
   const wishlistCount = wishlistIds.length;
 
@@ -676,6 +688,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         toggleWishlist,
         moveAllWishlistToCart,
         isInWishlist,
+        clearCart,
       }}
     >
       {children}

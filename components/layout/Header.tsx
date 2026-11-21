@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { HeaderIcons } from "./HeaderIcons";
 import { MobileMenu } from "./MobileMenu";
 import { NavLinks } from "./NavLinks";
@@ -13,7 +14,9 @@ export function Header() {
         <Link href="/" aria-label="ShopMate home" className="shrink-0">
           <Image src="/logo.svg" alt="ShopMate" width={132} height={32} priority className="h-8 w-auto max-[480px]:h-7" />
         </Link>
-        <NavLinks />
+        <Suspense fallback={<nav aria-label="Main" className="hidden gap-[22px] text-sm leading-none font-medium min-[961px]:flex" />}>
+          <NavLinks />
+        </Suspense>
         <SearchForm id="q1" className="ml-auto max-w-[380px] flex-1 max-[960px]:hidden" />
         <HeaderIcons />
       </div>

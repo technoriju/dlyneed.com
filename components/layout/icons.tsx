@@ -123,3 +123,10 @@ export const LockIcon = ({ size = 18, className }: P) => (
     <path d="M8 11V7a4 4 0 0 1 8 0v4" />
   </svg>
 );
+
+export const CheckIcon = ({ size = 18, className }: P) => (
+  <svg {...base(size, className)} strokeWidth={2.5}>
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
