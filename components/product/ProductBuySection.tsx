@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { CartIcon, HeartIcon, PinIcon, ReturnIcon, TruckIcon } from "@/components/layout/icons";
 import { btnPrimary, btnSecondary, btnSecondarySm } from "@/components/ui/button";
@@ -31,6 +31,23 @@ export function ProductBuySection({ product }: Props) {
   const [selectedOption, setSelectedOption] = useState<string>(initialOption);
   const [qty, setQty] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  // Watch for main buy action scroll visibility for mobile sticky bar
+  useEffect(() => {
+    const target = document.getElementById("buy-section-actions");
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   // Pincode checker state
   const [pincode, setPincode] = useState("");
@@ -136,7 +153,10 @@ export function ProductBuySection({ product }: Props) {
       )}
 
       {/* Buy Actions & Quantity Stepper */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div
+        id="buy-section-actions"
+        className="grid grid-cols-[auto_1fr_auto] gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3"
+      >
         {/* Quantity Stepper */}
         <div
           className="inline-flex h-11 items-center rounded-sm border border-border-strong bg-surface"
@@ -148,11 +168,11 @@ export function ProductBuySection({ product }: Props) {
             onClick={() => handleQtyChange(-1)}
             disabled={qty <= 1}
             aria-label="Decrease quantity"
-            className="grid size-11 place-items-center text-base font-bold text-ink-700 transition-colors hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400"
+            className="grid size-11 place-items-center text-base font-bold text-ink-700 transition-colors hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400 active:bg-surface-muted"
           >
             −
           </button>
-          <output aria-live="polite" className="w-9 text-center text-sm font-bold text-ink-900">
+          <output aria-live="polite" className="w-8 sm:w-9 text-center text-sm font-bold text-ink-900">
             {qty}
           </output>
           <button
@@ -160,7 +180,7 @@ export function ProductBuySection({ product }: Props) {
             onClick={() => handleQtyChange(1)}
             disabled={qty >= 10}
             aria-label="Increase quantity"
-            className="grid size-11 place-items-center text-base font-bold text-ink-700 transition-colors hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400"
+            className="grid size-11 place-items-center text-base font-bold text-ink-700 transition-colors hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400 active:bg-surface-muted"
           >
             +
           </button>
@@ -172,7 +192,7 @@ export function ProductBuySection({ product }: Props) {
           onClick={handleAddToCart}
           className={`${btnSecondary} ${
             isAdded ? "!border-ok !bg-ok/10 !text-ok" : ""
-          } flex-1 min-w-[140px]`}
+          } flex-1 min-w-[120px] text-xs sm:text-sm active:scale-[0.98] transition-transform`}
         >
           {isAdded ? (
             <span className="font-bold">✓ Added</span>
@@ -183,22 +203,13 @@ export function ProductBuySection({ product }: Props) {
           )}
         </button>
 
-        {/* Buy Now Button */}
-        <button
-          type="button"
-          onClick={handleBuyNow}
-          className={`${btnPrimary} flex-1 min-w-[130px]`}
-        >
-          Buy Now
-        </button>
-
         {/* Wishlist Button */}
         <button
           type="button"
           aria-pressed={isWishlisted}
           aria-label={isWishlisted ? "Remove from wishlist" : "Save to wishlist"}
           onClick={() => toggleWishlist(product.id, product.name)}
-          className={`grid size-11 cursor-pointer place-items-center rounded-sm border transition-colors ${
+          className={`grid size-11 cursor-pointer place-items-center rounded-sm border transition-colors active:scale-95 ${
             isWishlisted
               ? "border-[#c0392b] bg-red-50 text-[#c0392b]"
               : "border-border-strong bg-surface text-ink-700 hover:border-brand-500 hover:text-ink-900"
@@ -206,6 +217,45 @@ export function ProductBuySection({ product }: Props) {
         >
           <HeartIcon size={18} filled={isWishlisted} />
         </button>
+
+        {/* Buy Now Button - Full width on small phones, inline on desktop */}
+        <button
+          type="button"
+          onClick={handleBuyNow}
+          className={`${btnPrimary} col-span-3 h-11 w-full sm:col-auto sm:flex-1 sm:min-w-[130px] text-sm active:scale-[0.98] transition-transform`}
+        >
+          Buy Now
+        </button>
+      </div>
+
+      {/* Sticky Mobile Buy Bar (docked above mobile bottom nav) */}
+      <div
+        className={`fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom,0px))] z-30 border-t border-border bg-surface/95 p-2.5 px-3.5 backdrop-blur-md shadow-[0_-4px_16px_rgba(17,17,17,0.08)] transition-transform duration-300 md:hidden ${
+          showStickyBar ? "translate-y-0" : "translate-y-full pointer-events-none"
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <span className="block truncate text-xs font-semibold text-ink-900">{product.name}</span>
+            <b className="text-sm font-bold text-ink-900">{inr(product.pricePaise)}</b>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className="inline-flex h-9 items-center justify-center rounded-sm border border-border-strong bg-surface px-3 text-xs font-semibold text-ink-900 transition-colors hover:border-brand-500 active:scale-95"
+            >
+              {isAdded ? "✓ Added" : "Add to Cart"}
+            </button>
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="inline-flex h-9 items-center justify-center rounded-sm bg-brand-600 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-brand-700 active:scale-95"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Delivery & Assurance Details Box */}

@@ -33,11 +33,11 @@ export function Countdown() {
   ];
 
   return (
-    <div className="mb-7 flex gap-2 tabular-nums" role="timer" aria-label="Offer ends in">
+    <div className="mb-6 sm:mb-7 flex flex-wrap gap-1.5 sm:gap-2 tabular-nums" role="timer" aria-label="Offer ends in">
       {parts.map((p) => (
-        <div key={p.label} className="min-w-14 rounded-sm bg-surface px-2.5 py-2 text-center">
-          <b className="block text-xl leading-none font-bold text-ink-900">{pad(p.value)}</b>
-          <span className="text-[11px] tracking-[.4px] text-ink-500 uppercase">{p.label}</span>
+        <div key={p.label} className="min-w-12 sm:min-w-14 rounded-sm bg-surface px-2 sm:px-2.5 py-1.5 sm:py-2 text-center">
+          <b className="block text-lg sm:text-xl leading-none font-bold text-ink-900">{pad(p.value)}</b>
+          <span className="text-[10px] sm:text-[11px] tracking-[.4px] text-ink-500 uppercase">{p.label}</span>
         </div>
       ))}
     </div>

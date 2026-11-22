@@ -130,7 +130,7 @@ export function OrdersView({ initialOrders }: { initialOrders: OrderData[] }) {
       </div>
 
       {/* Filter Tabs */}
-      <div className="mb-4.5 flex flex-wrap gap-2" role="group" aria-label="Filter orders">
+      <div className="mb-4.5 flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 no-scrollbar" role="group" aria-label="Filter orders">
         {[
           { key: "all", label: "All", count: orders.length },
           { key: "active", label: "In progress", count: activeCount },
@@ -144,7 +144,7 @@ export function OrdersView({ initialOrders }: { initialOrders: OrderData[] }) {
               type="button"
               onClick={() => setFilter(tab.key as OrderFilter)}
               aria-pressed={isSelected}
-              className={`h-9 cursor-pointer rounded-full px-3.5 text-xs font-semibold transition-colors ${
+              className={`h-9 shrink-0 cursor-pointer rounded-full px-3.5 text-xs font-semibold whitespace-nowrap transition-colors ${
                 isSelected
                   ? "bg-ink-900 text-white"
                   : "border border-border-strong bg-surface text-ink-700 hover:border-ink-900"
@@ -171,8 +171,8 @@ export function OrdersView({ initialOrders }: { initialOrders: OrderData[] }) {
                 className="overflow-hidden rounded-xl border border-border bg-surface shadow-sm"
               >
                 {/* Order Head Meta */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-muted px-4.5 py-3 text-xs text-ink-500">
-                  <div className="flex flex-wrap gap-7">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-muted px-3.5 sm:px-4.5 py-3 text-xs text-ink-500">
+                  <div className="flex flex-wrap gap-4 sm:gap-7">
                     <div>
                       <span className="block text-ink-500">Order placed</span>
                       <b className="text-sm font-semibold text-ink-900">
@@ -191,44 +191,46 @@ export function OrdersView({ initialOrders }: { initialOrders: OrderData[] }) {
                 </div>
 
                 {/* Order Body */}
-                <div className="flex flex-wrap items-center justify-between gap-4 p-4.5">
-                  {/* Thumbnails */}
-                  <div className="flex shrink-0 gap-2">
-                    {order.items.slice(0, 3).map((item) => (
-                      <div
-                        key={item.id}
-                        className="relative size-15 overflow-hidden rounded-md border border-border bg-surface-muted"
-                      >
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                          sizes="60px"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Order Text Info */}
-                  <div className="min-w-[180px] flex-1">
-                    <div className="mb-1">
-                      <StatusPill status={order.status} />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 p-3.5 sm:p-4.5">
+                  <div className="flex items-center gap-3">
+                    {/* Thumbnails */}
+                    <div className="flex shrink-0 gap-2">
+                      {order.items.slice(0, 3).map((item) => (
+                        <div
+                          key={item.id}
+                          className="relative size-14 sm:size-15 overflow-hidden rounded-md border border-border bg-surface-muted shrink-0"
+                        >
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                            sizes="60px"
+                          />
+                        </div>
+                      ))}
                     </div>
-                    <b className="block text-sm font-semibold text-ink-900">
-                      {firstItem ? firstItem.name : "Order item"}
-                      {remainingCount > 0 ? ` and ${remainingCount} more item${remainingCount > 1 ? "s" : ""}` : ""}
-                    </b>
-                    <span className="mt-0.5 block text-xs text-ink-500">
-                      {getOrderSubtitle(order)}
-                    </span>
+
+                    {/* Order Text Info */}
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1">
+                        <StatusPill status={order.status} />
+                      </div>
+                      <b className="block text-sm font-semibold text-ink-900 truncate">
+                        {firstItem ? firstItem.name : "Order item"}
+                        {remainingCount > 0 ? ` and ${remainingCount} more item${remainingCount > 1 ? "s" : ""}` : ""}
+                      </b>
+                      <span className="mt-0.5 block text-xs text-ink-500">
+                        {getOrderSubtitle(order)}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border/60">
                     <Link
                       href={`/account/orders/${order.id}`}
-                      className="inline-flex h-8.5 items-center justify-center rounded-md bg-brand-600 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-brand-700"
+                      className="inline-flex h-9 flex-1 sm:flex-initial items-center justify-center rounded-md bg-brand-600 px-4 text-xs font-semibold text-white transition-colors hover:bg-brand-700 active:scale-95"
                     >
                       {isInProgress ? "Track order" : "View details"}
                     </Link>
@@ -237,7 +239,7 @@ export function OrdersView({ initialOrders }: { initialOrders: OrderData[] }) {
                         type="button"
                         onClick={() => handleBuyAgain(order)}
                         disabled={buyingAgain === order.id}
-                        className="inline-flex h-8.5 cursor-pointer items-center justify-center rounded-md border border-border-strong bg-surface px-3.5 text-xs font-semibold text-ink-700 transition-colors hover:bg-surface-muted disabled:opacity-50"
+                        className="inline-flex h-9 flex-1 sm:flex-initial cursor-pointer items-center justify-center rounded-md border border-border-strong bg-surface px-4 text-xs font-semibold text-ink-700 transition-colors hover:bg-surface-muted disabled:opacity-50 active:scale-95"
                       >
                         {buyingAgain === order.id ? "Adding..." : "Buy again"}
                       </button>

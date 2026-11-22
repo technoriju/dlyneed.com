@@ -47,11 +47,49 @@ export function AccountShell({ user, children }: AccountShellProps) {
   const cleanPhone = user.phone.replace(/^\+91/, "");
 
   return (
-    <div className="grid grid-cols-1 items-start gap-7 md:grid-cols-[240px_minmax(0,1fr)] md:gap-8">
-      {/* Side navigation */}
+    <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[240px_minmax(0,1fr)] md:gap-8">
+      {/* Mobile Horizontal Subnav (< md) */}
+      <nav
+        aria-label="Account mobile navigation"
+        className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar border-b border-border md:hidden"
+      >
+        {navItems.map((item) => {
+          const isActive =
+            item.href === "/account"
+              ? pathname === "/account"
+              : pathname.startsWith(item.href);
+          const IconComponent = item.icon;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+                isActive
+                  ? "bg-brand-600 text-white shadow-xs"
+                  : "border border-border bg-surface text-ink-700 hover:bg-surface-muted"
+              }`}
+            >
+              <IconComponent size={15} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface px-3.5 py-2 text-xs font-semibold whitespace-nowrap text-bad hover:bg-bad/10 transition-colors"
+        >
+          <LogoutIcon size={15} />
+          <span>Sign out</span>
+        </button>
+      </nav>
+
+      {/* Desktop Side navigation (md+) */}
       <nav
         aria-label="Account"
-        className="sticky top-[calc(92px+env(safe-area-inset-top,0px))] flex flex-col gap-0.5 rounded-xl border border-border bg-surface p-2.5 shadow-sm"
+        className="sticky top-[calc(92px+env(safe-area-inset-top,0px))] hidden md:flex flex-col gap-0.5 rounded-xl border border-border bg-surface p-2.5 shadow-sm"
       >
         {/* User Identity */}
         <div className="mb-2 flex items-center gap-3 border-b border-border px-2.5 pt-3 pb-4">

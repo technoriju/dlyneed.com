@@ -1224,12 +1224,12 @@ export function CheckoutView() {
       {/* Payment Simulator Modal (spec §7 & prototype fallback) */}
       {simulator && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-labelledby="sim-title"
         >
-          <div className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-pop">
+          <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-2xl bg-surface p-5 sm:p-6 shadow-pop">
             <div className="flex items-center justify-between">
               <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
                 Payment simulator

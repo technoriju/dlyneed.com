@@ -140,15 +140,24 @@ export function FilterSidebar({
         </label>
       </div>
 
-      {/* Clear Filters Button */}
-      <div className="pt-1">
+      {/* Clear & Apply Filters */}
+      <div className={`pt-2 ${isMobileDrawer ? "sticky bottom-0 -mx-5 -mb-5 border-t border-border bg-surface p-4 flex gap-2.5 shadow-[0_-4px_12px_rgba(17,17,17,0.05)]" : ""}`}>
         <button
           type="button"
           onClick={onClearAll}
-          className={`${btnSecondarySm} w-full`}
+          className={`${btnSecondarySm} ${isMobileDrawer ? "flex-1" : "w-full"}`}
         >
-          Clear all filters
+          Clear all
         </button>
+        {isMobileDrawer && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 inline-flex h-9 items-center justify-center rounded-sm bg-brand-600 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-brand-700 active:scale-95"
+          >
+            Apply Filters
+          </button>
+        )}
       </div>
     </div>
   );

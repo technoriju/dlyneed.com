@@ -61,7 +61,7 @@ export function ProductGallery({ images, name, discountPct }: Props) {
 
       {/* Multiple Image Thumbnails if more than 1 image */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Product thumbnails">
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar" role="tablist" aria-label="Product thumbnails">
           {images.map((img, idx) => (
             <button
               key={idx}
@@ -72,7 +72,7 @@ export function ProductGallery({ images, name, discountPct }: Props) {
                 setSelectedIndex(idx);
                 setIsZoomed(false);
               }}
-              className={`relative size-16 flex-none overflow-hidden rounded-md border-2 bg-surface-muted transition-colors ${
+              className={`relative size-14 sm:size-16 flex-none overflow-hidden rounded-md border-2 bg-surface-muted transition-colors ${
                 idx === selectedIndex ? "border-brand-600 ring-2 ring-brand-100" : "border-border hover:border-brand-500"
               }`}
             >
@@ -83,16 +83,16 @@ export function ProductGallery({ images, name, discountPct }: Props) {
       )}
 
       {/* Perks Strip */}
-      <div className="grid grid-cols-3 gap-2.5 max-[560px]:grid-cols-1">
-        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2.5 text-xs text-ink-500">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2 sm:p-2.5 text-xs text-ink-500">
           <TruckIcon size={18} className="flex-none text-brand-600" />
           <span>Free shipping over ₹999</span>
         </div>
-        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2.5 text-xs text-ink-500">
+        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2 sm:p-2.5 text-xs text-ink-500">
           <ReturnIcon size={18} className="flex-none text-brand-600" />
           <span>30-day returns</span>
         </div>
-        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2.5 text-xs text-ink-500">
+        <div className="flex items-center gap-2 rounded-md bg-brand-50 p-2 sm:p-2.5 text-xs text-ink-500">
           <LockIcon size={18} className="flex-none text-brand-600" />
           <span>Secure checkout</span>
         </div>

@@ -224,9 +224,9 @@ export function ShopView({
       </div>
 
       {/* Main Two-Column Shop Layout */}
-      <div className="grid grid-cols-[240px_minmax(0,1fr)] items-start gap-8 max-[720px]:grid-cols-1">
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[240px_minmax(0,1fr)] md:gap-8">
         {/* Desktop Filter Sidebar */}
-        <aside className="sticky top-[92px] hidden max-[720px]:hidden md:block" aria-label="Filters">
+        <aside className="sticky top-[92px] hidden md:block" aria-label="Filters">
           <FilterSidebar
             categories={categories}
             selectedCategories={selectedCategories}
@@ -251,7 +251,7 @@ export function ShopView({
             }}
           >
             <div
-              className="absolute inset-y-0 right-0 w-[min(88vw,340px)] overflow-y-auto bg-surface p-5 shadow-pop"
+              className="absolute inset-y-0 right-0 w-[min(88vw,340px)] overflow-y-auto bg-surface p-5 pt-[calc(env(safe-area-inset-top,0px)+16px)] pb-[calc(env(safe-area-inset-bottom,0px)+20px)] shadow-pop"
               role="dialog"
               aria-modal="true"
               aria-label="Filters"
@@ -278,7 +278,7 @@ export function ShopView({
         {/* Products and Toolbar Column */}
         <div className="min-w-0">
           {/* Toolbar */}
-          <div className="mb-4.5 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-4.5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
             <FilterChips
               q={q}
               selectedCategories={selectedCategories}
@@ -307,7 +307,7 @@ export function ShopView({
           {/* Product Grid or Empty State */}
           {products.length > 0 ? (
             <div
-              className={`grid grid-cols-4 gap-5 transition-opacity max-[1024px]:grid-cols-3 max-[720px]:grid-cols-2 max-[400px]:grid-cols-1 ${
+              className={`grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-5 transition-opacity ${
                 isPending ? "opacity-60" : ""
               }`}
             >

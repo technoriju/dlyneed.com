@@ -43,7 +43,7 @@ export function WishlistView() {
 
       {/* Grid or Empty State */}
       {wishlistCount > 0 ? (
-        <div className="grid grid-cols-5 gap-5.5 max-[1080px]:grid-cols-3 max-[720px]:grid-cols-2 max-[720px]:gap-3.5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-5">
           {wishlistProducts.map((p) => (
             <ProductCard key={p.id || p.slug} product={p} />
           ))}

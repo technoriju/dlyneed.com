@@ -115,9 +115,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="grid gap-[56px] max-[720px]:gap-8">
+      <div className="grid gap-8 sm:gap-12 md:gap-[56px]">
         {/* Breadcrumb Navigation */}
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-[13px] text-ink-500">
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs sm:text-[13px] text-ink-500">
           <Link href="/" className="hover:text-brand-600">
             Home
           </Link>
@@ -126,7 +126,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {product.category.name}
           </Link>
           <span aria-hidden="true">/</span>
-          <span aria-current="page" className="font-medium text-ink-900">
+          <span aria-current="page" className="font-medium text-ink-900 truncate max-w-[200px] sm:max-w-none">
             {product.name}
           </span>
         </nav>
@@ -134,7 +134,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         {/* Main Product Section: Gallery & Info */}
         <section
           aria-labelledby="pdp-h"
-          className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-start gap-14 max-[720px]:grid-cols-1 max-[720px]:gap-8"
+          className="grid grid-cols-1 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-start gap-8 md:gap-14"
         >
           {/* Gallery Column */}
           <ProductGallery
@@ -224,7 +224,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 View All Products <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <div className="grid grid-cols-4 gap-5 max-[1024px]:grid-cols-3 max-[720px]:grid-cols-2 max-[400px]:grid-cols-1">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-5">
               {related.map((p) => (
                 <ProductCard key={p.slug} product={p} />
               ))}

@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { categoryNav } from "@/lib/nav";
-import { MenuIcon } from "./icons";
+import { MenuIcon, XIcon } from "./icons";
 
-const linkCls = "rounded-sm px-2 py-3 font-medium text-ink-900 hover:bg-surface-muted";
-const headCls = "mx-2 mt-4 mb-1 text-xs tracking-[.5px] text-ink-500 uppercase";
+const linkCls = "flex min-h-[44px] items-center rounded-md px-3 py-2.5 font-medium text-ink-900 transition-colors hover:bg-surface-muted active:bg-brand-50";
+const headCls = "mx-3 mt-4 mb-1 text-xs font-bold tracking-[.6px] text-ink-500 uppercase";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -18,7 +18,12 @@ export function MobileMenu() {
     firstLink.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    // Lock body scroll
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   const close = () => setOpen(false);
@@ -30,21 +35,31 @@ export function MobileMenu() {
         aria-label="Open menu"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="grid size-[42px] place-items-center rounded-full border border-border bg-surface text-ink-900 hover:border-brand-500 hover:text-brand-600 max-[480px]:size-[38px] min-[961px]:hidden"
+        className="grid size-[42px] place-items-center rounded-full border border-border bg-surface text-ink-900 transition-colors hover:border-brand-500 hover:text-brand-600 max-[480px]:size-[38px] min-[961px]:hidden"
       >
         <MenuIcon />
       </button>
       {open && (
         <div
-          className="fixed inset-0 z-80 bg-ink-900/40"
+          className="fixed inset-0 z-80 bg-ink-900/40 backdrop-blur-xs transition-opacity"
           onClick={(e) => e.target === e.currentTarget && close()}
         >
           <nav
             aria-label="Menu"
-            className="absolute inset-y-0 left-0 flex w-[min(84vw,320px)] flex-col gap-1 overflow-auto bg-surface p-5"
+            className="absolute inset-y-0 left-0 flex w-[min(84vw,320px)] flex-col gap-1 overflow-y-auto bg-surface p-4 pt-[calc(env(safe-area-inset-top,0px)+16px)] pb-[calc(env(safe-area-inset-bottom,0px)+24px)] shadow-pop"
             onClick={(e) => (e.target as HTMLElement).closest("a") && close()}
           >
-            <Image src="/logo.svg" alt="ShopMate" width={124} height={30} className="mx-2 mb-3 h-[30px] w-auto" />
+            <div className="flex items-center justify-between px-2 pb-3 mb-1 border-b border-border">
+              <Image src="/logo.svg" alt="ShopMate" width={124} height={30} className="h-[28px] w-auto" />
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={close}
+                className="grid size-9 place-items-center rounded-full text-ink-500 hover:bg-surface-muted hover:text-ink-900"
+              >
+                <XIcon size={18} />
+              </button>
+            </div>
             <Link ref={firstLink} href="/" className={linkCls}>Home</Link>
             <Link href="/shop" className={linkCls}>Shop all</Link>
             <Link href="/deals" className={linkCls}>Deals</Link>

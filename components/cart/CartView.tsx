@@ -103,7 +103,7 @@ export function CartView() {
             return (
               <div
                 key={line.variantId}
-                className="grid grid-cols-[96px_minmax(0,1fr)_auto] items-start gap-4 p-4.5 max-[720px]:grid-cols-[76px_minmax(0,1fr)] max-[720px]:p-3.5"
+                className="grid grid-cols-[80px_minmax(0,1fr)] sm:grid-cols-[96px_minmax(0,1fr)_auto] items-start gap-3.5 sm:gap-4 p-3.5 sm:p-4.5"
               >
                 {/* Image */}
                 <Link href={`/product/${line.slug}`} className="shrink-0">
@@ -112,24 +112,35 @@ export function CartView() {
                     alt={line.name}
                     width={96}
                     height={96}
-                    className="size-24 rounded-md object-cover bg-surface-muted max-[720px]:size-[76px]"
+                    className="size-20 sm:size-24 rounded-md object-cover bg-surface-muted"
                   />
                 </Link>
 
                 {/* Details */}
-                <div>
-                  <h3 className="text-[15px] font-semibold leading-snug">
-                    <Link href={`/product/${line.slug}`} className="text-inherit hover:text-brand-600">
-                      {line.name}
-                    </Link>
-                  </h3>
-                  <p className="mt-1 text-[13px] text-ink-500">
+                <div className="min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-sm sm:text-[15px] font-semibold leading-snug">
+                      <Link href={`/product/${line.slug}`} className="text-inherit hover:text-brand-600">
+                        {line.name}
+                      </Link>
+                    </h3>
+                    {/* Mobile Price */}
+                    <div className="text-right sm:hidden tabular-nums shrink-0">
+                      <b className="block text-base font-bold text-ink-900">
+                        {inr(line.pricePaise * line.qty)}
+                      </b>
+                      <s className="text-xs text-ink-400">{inr(line.mrpPaise * line.qty)}</s>
+                    </div>
+                  </div>
+
+                  <p className="mt-1 text-xs sm:text-[13px] text-ink-500">
                     {hasOption && `${line.optionName || "Option"}: ${line.optionValue} · `}In stock · Delivery in 3–5 days
                   </p>
+
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     {/* Stepper */}
                     <div
-                      className="inline-flex h-[38px] items-center rounded-sm border border-border-strong bg-surface"
+                      className="inline-flex h-9 sm:h-[38px] items-center rounded-sm border border-border-strong bg-surface"
                       role="group"
                       aria-label={`Quantity for ${line.name}`}
                     >
@@ -138,11 +149,11 @@ export function CartView() {
                         onClick={() => updateQty(line.variantId, line.qty - 1)}
                         disabled={line.qty <= 1}
                         aria-label="Decrease quantity"
-                        className="grid w-[34px] place-items-center text-base font-bold text-ink-700 hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400"
+                        className="grid w-8 sm:w-[34px] place-items-center text-base font-bold text-ink-700 hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400 active:bg-surface-muted"
                       >
                         −
                       </button>
-                      <output className="min-w-[30px] text-center text-[15px] font-semibold tabular-nums text-ink-900">
+                      <output className="min-w-[28px] sm:min-w-[30px] text-center text-sm sm:text-[15px] font-semibold tabular-nums text-ink-900">
                         {line.qty}
                       </output>
                       <button
@@ -150,7 +161,7 @@ export function CartView() {
                         onClick={() => updateQty(line.variantId, line.qty + 1)}
                         disabled={line.qty >= 10}
                         aria-label="Increase quantity"
-                        className="grid w-[34px] place-items-center text-base font-bold text-ink-700 hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400"
+                        className="grid w-8 sm:w-[34px] place-items-center text-base font-bold text-ink-700 hover:text-ink-900 disabled:cursor-not-allowed disabled:text-ink-400 active:bg-surface-muted"
                       >
                         +
                       </button>
@@ -159,22 +170,22 @@ export function CartView() {
                     <button
                       type="button"
                       onClick={() => moveToWishlist(line.variantId, line.productId)}
-                      className="inline-flex h-9 cursor-pointer items-center justify-center rounded-sm px-2 text-[13px] font-semibold text-brand-600 hover:bg-brand-50"
+                      className="inline-flex h-9 cursor-pointer items-center justify-center rounded-sm px-2 text-xs sm:text-[13px] font-semibold text-brand-600 hover:bg-brand-50 active:bg-brand-100"
                     >
                       Move to wishlist
                     </button>
                     <button
                       type="button"
                       onClick={() => removeFromCart(line.variantId)}
-                      className="inline-flex h-9 cursor-pointer items-center justify-center rounded-sm px-2 text-[13px] font-semibold text-bad hover:bg-[#fbe9e7]"
+                      className="inline-flex h-9 cursor-pointer items-center justify-center rounded-sm px-2 text-xs sm:text-[13px] font-semibold text-bad hover:bg-[#fbe9e7] active:bg-red-100"
                     >
                       Remove
                     </button>
                   </div>
                 </div>
 
-                {/* Price */}
-                <div className="text-right tabular-nums max-[720px]:col-start-2 max-[720px]:flex max-[720px]:items-baseline max-[720px]:gap-2 max-[720px]:text-left">
+                {/* Desktop Price */}
+                <div className="hidden sm:block text-right tabular-nums">
                   <b className="block text-base font-bold text-ink-900">
                     {inr(line.pricePaise * line.qty)}
                   </b>
@@ -323,6 +334,20 @@ export function CartView() {
             <LockIcon size={16} /> Safe and secure payments by Razorpay
           </div>
         </aside>
+      </div>
+
+      {/* Mobile Sticky Checkout Bar (docked above mobile bottom nav) */}
+      <div className="fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom,0px))] z-30 border-t border-border bg-surface/95 p-3 px-4 backdrop-blur-md shadow-[0_-4px_16px_rgba(17,17,17,0.08)] flex items-center justify-between gap-4 lg:hidden">
+        <div>
+          <span className="text-xs text-ink-500">Total ({summary.totalQty} item{summary.totalQty === 1 ? "" : "s"})</span>
+          <b className="block text-lg font-bold text-ink-900">{inr(summary.totalPaise)}</b>
+        </div>
+        <Link
+          href="/checkout"
+          className="inline-flex h-11 items-center justify-center rounded-sm bg-brand-600 px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-700 active:scale-95"
+        >
+          Checkout →
+        </Link>
       </div>
     </div>
   );

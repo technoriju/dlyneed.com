@@ -44,8 +44,8 @@ async function Year() {
 
 export function Footer() {
   return (
-    <footer className="bg-brand-50">
-      <div className="mx-auto max-w-[1200px] px-4 pt-14 pb-7">
+    <footer className="bg-brand-50 pb-[calc(60px+env(safe-area-inset-bottom,0px))] md:pb-0">
+      <div className="mx-auto max-w-[1200px] px-4 pt-10 sm:pt-14 pb-7">
         <div className="grid grid-cols-[1.3fr_1fr_1fr_1.6fr] gap-8 max-[960px]:grid-cols-2 max-[720px]:grid-cols-1">
           <div>
             <Image src="/logo.svg" alt="ShopMate" width={132} height={32} className="h-8 w-auto" />

@@ -27,9 +27,9 @@ export function ProductTabs({
   const [activeTab, setActiveTab] = useState<string>("desc");
 
   return (
-    <section aria-label="Product information" className="border-t border-border pt-10">
+    <section aria-label="Product information" className="border-t border-border pt-8 sm:pt-10">
       {/* Tab Navigation */}
-      <div className="flex gap-7 overflow-x-auto border-b border-border text-sm" role="tablist">
+      <div className="flex gap-4 sm:gap-7 overflow-x-auto border-b border-border text-xs sm:text-sm no-scrollbar" role="tablist">
         {TABS.map((tab) => {
           const isSelected = activeTab === tab.id;
           const displayLabel = tab.id === "reviews" ? `Ratings (${ratingCount})` : tab.label;
@@ -42,7 +42,7 @@ export function ProductTabs({
               aria-selected={isSelected}
               tabIndex={isSelected ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
-              className={`cursor-pointer pb-3.5 font-semibold whitespace-nowrap transition-colors ${
+              className={`cursor-pointer pb-3 font-semibold whitespace-nowrap transition-colors ${
                 isSelected
                   ? "border-b-2 border-brand-600 text-brand-600"
                   : "border-b-2 border-transparent text-ink-500 hover:text-ink-900"
@@ -55,11 +55,11 @@ export function ProductTabs({
       </div>
 
       {/* Tab Panels */}
-      <div className="max-w-[760px] pt-6">
+      <div className="max-w-[760px] pt-5 sm:pt-6">
         {/* Description Panel */}
         {activeTab === "desc" && (
-          <div role="tabpanel" id="tp-desc" aria-labelledby="t-desc" className="grid gap-4 text-sm text-ink-700">
-            <p className="text-[15px] leading-relaxed text-ink-900">{description}</p>
+          <div role="tabpanel" id="tp-desc" aria-labelledby="t-desc" className="grid gap-4 text-xs sm:text-sm text-ink-700">
+            <p className="text-sm sm:text-[15px] leading-relaxed text-ink-900">{description}</p>
             {highlights.length > 0 && (
               <ul className="grid gap-2.5 pt-2">
                 {highlights.map((h, i) => (
@@ -76,21 +76,21 @@ export function ProductTabs({
         {/* Specifications Panel */}
         {activeTab === "specs" && (
           <div role="tabpanel" id="tp-specs" aria-labelledby="t-specs">
-            <table className="w-full border-collapse text-sm">
+            <table className="w-full border-collapse text-xs sm:text-sm">
               <tbody className="divide-y divide-border">
                 {specs.map((s, i) => (
                   <tr key={i}>
-                    <th scope="row" className="w-2/5 py-3 text-left font-medium text-ink-500">
+                    <th scope="row" className="w-1/3 sm:w-2/5 py-2.5 sm:py-3 text-left font-medium text-ink-500 pr-2">
                       {s.label}
                     </th>
-                    <td className="py-3 text-left text-ink-900">{s.value}</td>
+                    <td className="py-2.5 sm:py-3 text-left text-ink-900 break-words">{s.value}</td>
                   </tr>
                 ))}
                 <tr>
-                  <th scope="row" className="w-2/5 py-3 text-left font-medium text-ink-500">
+                  <th scope="row" className="w-1/3 sm:w-2/5 py-2.5 sm:py-3 text-left font-medium text-ink-500 pr-2">
                     Country of origin
                   </th>
-                  <td className="py-3 text-left text-ink-900">India</td>
+                  <td className="py-2.5 sm:py-3 text-left text-ink-900">India</td>
                 </tr>
               </tbody>
             </table>
@@ -100,12 +100,12 @@ export function ProductTabs({
         {/* Ratings Panel */}
         {activeTab === "reviews" && (
           <div role="tabpanel" id="tp-reviews" aria-labelledby="t-reviews">
-            <div className="grid grid-cols-[auto_1fr] items-center gap-8 max-[480px]:grid-cols-1 max-[480px]:gap-3">
-              <div className="text-[48px] font-bold leading-none text-ink-900">
+            <div className="grid grid-cols-[auto_1fr] items-center gap-5 sm:gap-8 max-[480px]:grid-cols-1">
+              <div className="text-[40px] sm:text-[48px] font-bold leading-none text-ink-900">
                 {ratingAvg}
               </div>
               <div>
-                <div className="flex items-center gap-1 text-base text-star" aria-label={`${ratingAvg} out of 5 stars`}>
+                <div className="flex items-center gap-1 text-sm sm:text-base text-star" aria-label={`${ratingAvg} out of 5 stars`}>
                   {"★".repeat(Math.round(ratingAvg))}
                   {"☆".repeat(5 - Math.round(ratingAvg))}
                 </div>
@@ -119,7 +119,7 @@ export function ProductTabs({
 
         {/* Shipping & Returns Panel */}
         {activeTab === "ship" && (
-          <div role="tabpanel" id="tp-ship" aria-labelledby="t-ship" className="grid gap-3.5 text-sm text-ink-700">
+          <div role="tabpanel" id="tp-ship" aria-labelledby="t-ship" className="grid gap-3.5 text-xs sm:text-sm text-ink-700">
             <p className="leading-relaxed">
               Orders over ₹999 ship free; below that, delivery is ₹79. Standard delivery takes 3–5 business days; express (1–2 days, metro cities) is ₹149.
             </p>

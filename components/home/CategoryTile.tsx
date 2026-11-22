@@ -17,16 +17,16 @@ export function CategoryTile({ slug, name, image, tint }: Props) {
   return (
     <Link
       href={`/category/${slug}`}
-      className="group flex flex-col items-center gap-3 text-center text-sm leading-tight font-medium text-ink-900"
+      className="group flex flex-col items-center gap-2 sm:gap-3 text-center text-xs sm:text-sm leading-tight font-medium text-ink-900 active:scale-95 transition-transform"
     >
       <span
-        className={`relative block aspect-square w-full max-w-[150px] rounded-full p-2 transition-transform group-hover:-translate-y-[3px] ${tints[tint] ?? "bg-surface-muted"}`}
+        className={`relative block aspect-square w-full max-w-[100px] sm:max-w-[130px] md:max-w-[150px] rounded-full p-1.5 sm:p-2 transition-transform group-hover:-translate-y-[3px] ${tints[tint] ?? "bg-surface-muted"}`}
       >
         <span className="relative block size-full overflow-hidden rounded-full">
-          <Image src={image} alt="" fill sizes="150px" className="object-cover" />
+          <Image src={image} alt="" fill sizes="(max-width: 640px) 100px, 150px" className="object-cover" />
         </span>
       </span>
-      {name}
+      <span className="line-clamp-2">{name}</span>
     </Link>
   );
 }

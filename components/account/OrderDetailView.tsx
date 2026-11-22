@@ -305,7 +305,7 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
               <button
                 type="button"
                 onClick={() => setShowCancelModal(true)}
-                className={`${btnDanger} cursor-pointer !h-9 !px-4 !text-xs`}
+                className={`${btnDanger} cursor-pointer flex-1 sm:flex-initial !h-10 !px-4 !text-xs active:scale-95`}
               >
                 Cancel order
               </button>
@@ -315,7 +315,7 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
               <button
                 type="button"
                 onClick={() => setShowReturnModal(true)}
-                className={`${btnSecondary} cursor-pointer !h-9 !px-4 !text-xs`}
+                className={`${btnSecondary} cursor-pointer flex-1 sm:flex-initial !h-10 !px-4 !text-xs active:scale-95`}
               >
                 Return items
               </button>
@@ -326,7 +326,7 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
                 type="button"
                 onClick={handleBuyAgain}
                 disabled={buyingAgain}
-                className={`${btnSecondary} cursor-pointer !h-9 !px-4 !text-xs disabled:opacity-50`}
+                className={`${btnSecondary} cursor-pointer flex-1 sm:flex-initial !h-10 !px-4 !text-xs disabled:opacity-50 active:scale-95`}
               >
                 {buyingAgain ? "Adding..." : "Buy again"}
               </button>
@@ -334,7 +334,7 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
 
             <Link
               href="/help"
-              className="inline-flex h-9 items-center justify-center rounded-lg border border-transparent px-3 text-xs font-semibold text-ink-700 hover:bg-surface-muted transition-colors"
+              className="inline-flex h-10 flex-1 sm:flex-initial items-center justify-center rounded-lg border border-border px-3.5 text-xs font-semibold text-ink-700 hover:bg-surface-muted transition-colors active:scale-95"
             >
               Need help?
             </Link>
@@ -409,12 +409,12 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
       {/* Cancel Order Modal */}
       {showCancelModal && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-ink-900/40 p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-ink-900/40 p-3 sm:p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-labelledby="cx-h"
         >
-          <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-xl animate-scale-up">
+          <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-xl border border-border bg-surface p-5 sm:p-6 shadow-xl animate-scale-up">
             <h2 id="cx-h" className="text-lg font-bold text-ink-900">
               Cancel this order?
             </h2>
@@ -466,12 +466,12 @@ export function OrderDetailView({ order: initialOrder }: OrderDetailViewProps) {
       {/* Return Modal */}
       {showReturnModal && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-ink-900/40 p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-ink-900/40 p-3 sm:p-4 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
           aria-labelledby="ret-h"
         >
-          <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-xl animate-scale-up">
+          <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-xl border border-border bg-surface p-5 sm:p-6 shadow-xl animate-scale-up">
             <h2 id="ret-h" className="text-lg font-bold text-ink-900">
               Return items?
             </h2>

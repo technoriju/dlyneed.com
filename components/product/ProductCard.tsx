@@ -57,20 +57,20 @@ export function ProductCard({ product: p }: { product: CardProduct }) {
           aria-pressed={isWishlisted}
           aria-label={isWishlisted ? `Remove ${p.name} from wishlist` : `Save ${p.name} to wishlist`}
           onClick={handleWishlistToggle}
-          className={`absolute top-2.5 right-2.5 grid size-[34px] cursor-pointer place-items-center rounded-full bg-surface shadow-card transition-colors ${
+          className={`absolute top-2.5 right-2.5 grid size-[36px] sm:size-[34px] cursor-pointer place-items-center rounded-full bg-surface shadow-card transition-colors ${
             isWishlisted ? "text-[#c0392b]" : "text-ink-900 hover:text-brand-600"
           }`}
         >
           <HeartIcon size={16} filled={isWishlisted} />
         </button>
       </div>
-      <div className="flex flex-1 flex-col gap-1.5 p-3.5 max-[480px]:p-2.5">
-        <h3 className="text-[15px] leading-snug font-semibold">
+      <div className="flex flex-1 flex-col gap-1.5 p-3 sm:p-3.5">
+        <h3 className="text-sm sm:text-[15px] leading-snug font-semibold line-clamp-2">
           <Link href={href} className="text-inherit hover:text-brand-600">
             {p.name}
           </Link>
         </h3>
-        <div className="flex items-center gap-1 text-[13px] text-ink-500">
+        <div className="flex items-center gap-1 text-xs sm:text-[13px] text-ink-500">
           <span className="text-star" aria-hidden="true">
             ★
           </span>
@@ -78,9 +78,9 @@ export function ProductCard({ product: p }: { product: CardProduct }) {
           <span aria-hidden="true">({p.ratingCount})</span>
           <span className="sr-only">{p.ratingCount} ratings</span>
         </div>
-        <div className="mt-0.5 mb-2 flex flex-wrap items-baseline gap-2 tabular-nums">
-          <b className="text-lg leading-none font-bold text-ink-900 max-[480px]:text-base">{inr(p.pricePaise)}</b>
-          <s className="text-[13px] text-ink-400">
+        <div className="mt-0.5 mb-2 flex flex-wrap items-baseline gap-1.5 sm:gap-2 tabular-nums">
+          <b className="text-base sm:text-lg leading-none font-bold text-ink-900">{inr(p.pricePaise)}</b>
+          <s className="text-xs sm:text-[13px] text-ink-400">
             <span className="sr-only">MRP </span>
             {inr(p.mrpPaise)}
           </s>
@@ -88,7 +88,7 @@ export function ProductCard({ product: p }: { product: CardProduct }) {
         <button
           type="button"
           onClick={handleAddToCart}
-          className={`${btnPrimary} mt-auto h-[38px] w-full text-[13px] ${
+          className={`${btnPrimary} mt-auto h-[38px] w-full text-xs sm:text-[13px] active:scale-[0.98] transition-transform ${
             justAdded ? "!bg-ink-900 text-white" : ""
           }`}
         >

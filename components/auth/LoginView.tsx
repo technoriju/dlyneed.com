@@ -223,7 +223,7 @@ export function LoginView() {
   };
 
   return (
-    <div className="mx-auto mt-6 max-w-[440px] rounded-md border border-border bg-surface p-8 shadow-card max-[480px]:p-5.5">
+    <div className="mx-auto mt-4 sm:mt-6 max-w-[440px] rounded-lg border border-border bg-surface p-4 sm:p-8 shadow-card">
       {/* STEP 1: Phone */}
       {step === "phone" && (
         <div className="grid gap-5">
@@ -313,7 +313,7 @@ export function LoginView() {
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
                   autoComplete={i === 0 ? "one-time-code" : "off"}
-                  className="size-12 rounded-sm border border-border-strong text-center text-xl font-bold text-ink-900 outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 max-[400px]:size-10 max-[400px]:text-lg"
+                  className="size-11 sm:size-12 rounded-sm border border-border-strong text-center text-lg sm:text-xl font-bold text-ink-900 outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 max-[360px]:size-9 max-[360px]:text-base"
                 />
               ))}
             </div>

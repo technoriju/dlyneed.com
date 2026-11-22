@@ -39,9 +39,9 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
   };
 
   return (
-    <div className="-mx-4 -my-7 -mb-[88px] min-h-screen bg-surface-muted flex flex-col">
+    <div className="-mx-3.5 sm:-mx-4 -mt-4 sm:-mt-7 -mb-[calc(76px+env(safe-area-inset-bottom,0px))] md:-mb-16 min-h-screen bg-surface-muted flex flex-col">
       {/* Top Admin Header Bar */}
-      <header className="sticky top-0 z-50 flex h-15 items-center justify-between border-b border-border bg-surface px-4 sm:px-8 shadow-xs">
+      <header className="sticky top-0 z-50 flex h-14 sm:h-15 items-center justify-between border-b border-border bg-surface px-3 sm:px-8 shadow-xs">
         <div className="flex items-center gap-3">
           <Link href="/admin" className="flex items-center gap-2">
             <span className="flex size-8 items-center justify-center rounded-lg bg-brand-600 font-bold text-white text-sm">
@@ -56,7 +56,7 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
           </Link>
         </div>
 
-        <div className="flex items-center gap-3 text-xs">
+        <div className="flex items-center gap-2 sm:gap-3 text-xs">
           <Link
             href="/"
             target="_blank"
@@ -74,7 +74,7 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
           <button
             type="button"
             onClick={handleLogout}
-            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-semibold text-bad hover:bg-bad/10 transition-colors"
+            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2.5 sm:px-3 py-1.5 font-semibold text-bad hover:bg-bad/10 transition-colors"
           >
             <LogoutIcon size={14} />
             <span>Sign Out</span>
@@ -87,9 +87,9 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
         {/* Sidebar Nav */}
         <nav
           aria-label="Admin Navigation"
-          className="w-full shrink-0 border-b border-border bg-surface p-3 md:w-56 md:border-b-0 md:border-r md:p-4"
+          className="w-full shrink-0 border-b border-border bg-surface p-2.5 sm:p-3 md:w-56 md:border-b-0 md:border-r md:p-4"
         >
-          <div className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-1 md:pb-0">
+          <div className="flex flex-row md:flex-col gap-1 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             {navItems.map((item) => {
               const isActive =
                 item.href === "/admin"
@@ -100,7 +100,7 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 sm:gap-2.5 rounded-lg px-2.5 sm:px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
                     isActive
                       ? "bg-brand-600 text-white shadow-xs"
                       : "text-ink-700 hover:bg-surface-muted hover:text-ink-900"
@@ -115,7 +115,7 @@ export function AdminLayout({ children, username = "Admin" }: AdminLayoutProps) 
         </nav>
 
         {/* Content View */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
           {children}
         </main>
       </div>
